@@ -30,5 +30,6 @@ export class SideNavListComponent implements OnInit, OnDestroy {
 
   public logout() {
     this.authService.logout();
+    this.onCloseSideNav();
   }
 }

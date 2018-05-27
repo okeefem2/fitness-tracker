@@ -26,7 +26,7 @@ export class LoginComponent implements OnInit {
   public onSubmit() {
     let message = 'There is an issue with the data entered, please review and try again.';
     if (this.loginForm.valid) {
-      message = 'Thanks for signing up!';
+      message = 'Welcome!';
       this.authService.login(this.loginForm.value);
     }
     this.snackBar.open(message, 'dismiss', {
