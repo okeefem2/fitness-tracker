@@ -1,1 +1,21 @@
-<router-outlet></router-outlet>
+<mat-sidenav-container>
+    <!-- matsidenav needs to be a direct child of mat sidenav container -->
+    <mat-sidenav #sidenav role="navigation">
+        <!-- <a mat-icon-button color="accent" [routerLink]="['signup']">
+            <mat-icon>
+                person_add
+            </mat-icon>
+        </a> -->
+        <side-nav-list (closeSideNav)="sidenav.close()"></side-nav-list>
+        <!-- <div fxFlex fxLayout="column" fxLayoutAlign="center" fxLayoutGap="10px">
+            had the links in this, but mat nav list is better
+        </div> -->
+    </mat-sidenav>
+    <mat-sidenav-content>
+        <header (toggleSideNav)="sidenav.toggle()"></header>
+        <main>
+            <router-outlet></router-outlet>
+        </main>
+    </mat-sidenav-content>
+</mat-sidenav-container>
+

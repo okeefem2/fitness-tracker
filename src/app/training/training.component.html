@@ -1,3 +1,11 @@
-<p>
-  training works!
-</p>
+<mat-tab-group *ngIf="!training">
+  <mat-tab label="New Training Session">
+    <new-training (startTraining)="onStartTraining()"></new-training>
+  </mat-tab>
+  <mat-tab label="Past Training Sessions">
+    <training-list></training-list>
+  </mat-tab>
+</mat-tab-group>
+<!-- shift alit down to duplicate line ( and shilft alt up) -->
+<!-- cmd f2 to edit all instances in a file -->
+<current-training *ngIf="training" (stopTraining)="onStopTraining()"></current-training>

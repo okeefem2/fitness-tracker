@@ -2,12 +2,49 @@
 @import '~@angular/material/prebuilt-themes/purple-green.css';
 /* @import "~@angular/material/prebuilt-themes/deeppurple-amber.css"; */
 
-body {
-    background-color: #262626;
+html, body {
+    background-color: #303030;
     color: whitesmoke;
-    font-family: Roboto,"Helvetica Neue Light","Helvetica Neue",Helvetica,Arial,"Lucida Grande",sans-serif
+    font-family: Roboto,"Helvetica Neue Light","Helvetica Neue",Helvetica,Arial,"Lucida Grande",sans-serif;
+    height: 100%;
+}
+
+body {
+    margin: 0;
 }
 
 mat-form-field {
     width: 300px;
+}
+
+.nav-items {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+mat-sidenav-container, mat-sidenav-content, mat-sidenav {
+    height: 100%;
+}
+
+mat-sidenav {
+    width: 200px;
+}
+
+a {
+    text-decoration: none;
+    color: white;
+    font-size: 1rem;
+}
+
+a:hover, a:active {
+    color: lightgray;
+}
+
+.nav-text {
+    margin-left: 5px;
+}
+
+.training-container {
+    padding: 25px;
 }

@@ -13,6 +13,9 @@ import { AppRoutingModule } from './app-routing.module';
 import { HomeComponent } from './home/home.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { LengthHintPipe } from './length-hint.pipe';
+import { HeaderComponent } from './navigation/header/header.component';
+import { SideNavListComponent } from './navigation/side-nav-list/side-nav-list.component';
+import { StopTrainingComponent } from './training/current-training/stop-training/stop-training.component';
 
 @NgModule({
   declarations: [
@@ -24,7 +27,10 @@ import { LengthHintPipe } from './length-hint.pipe';
     NewTrainingComponent,
     TrainingListComponent,
     HomeComponent,
-    LengthHintPipe
+    LengthHintPipe,
+    HeaderComponent,
+    SideNavListComponent,
+    StopTrainingComponent
   ],
   imports: [
     BrowserModule,
@@ -35,6 +41,9 @@ import { LengthHintPipe } from './length-hint.pipe';
     ReactiveFormsModule
   ],
   providers: [],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
+  entryComponents: [
+    StopTrainingComponent
+  ]
 })
 export class AppModule { }
