@@ -1,6 +1,6 @@
 <section fxLayout="column" fxLayoutAlign="center center" class="training-container">
   <mat-progress-spinner mode="determinate" [value]="progress"></mat-progress-spinner>
   <h2>{{ progress }}%</h2>
-  <p>Run Like the Glow Cloud (ALL HAIL) is After You</p>
+  <p>{{ exercise.name }} as if the Glow Cloud (ALL HAIL) is after you</p>
   <button mat-raised-button color="warn" (click)="onStopTraining()">Stop Training</button>
 </section>

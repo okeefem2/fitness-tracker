@@ -1,8 +1,10 @@
-import { Component, OnInit, OnDestroy, EventEmitter, Output } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { interval, Subscription } from 'rxjs';
 import { scan, takeWhile } from 'rxjs/operators';
 import { MatSnackBar, MatDialog } from '@angular/material';
 import { StopTrainingComponent } from './stop-training/stop-training.component';
+import { TrainingService } from '../training.service';
+import { Exercise } from '../exercise.model';
 
 @Component({
   selector: 'current-training',
@@ -10,15 +12,15 @@ import { StopTrainingComponent } from './stop-training/stop-training.component';
   styleUrls: ['./current-training.component.css']
 })
 export class CurrentTrainingComponent implements OnInit, OnDestroy {
-  @Output() public stopTraining = new EventEmitter<void>();
   public progress = 0;
-  private duration = 20000;
+  public exercise: Exercise;
   private progressSubscription: Subscription;
 
-  constructor(private snackBar: MatSnackBar, private dialog: MatDialog) { }
+  constructor(private snackBar: MatSnackBar, private dialog: MatDialog, private trainingService: TrainingService) { }
 
   ngOnInit() {
-    this.startTimer();
+    this.exercise = this.trainingService.getRunningExercise();
+    this.exercise && this.startTimer();
   }
 
   ngOnDestroy() {
@@ -26,7 +28,7 @@ export class CurrentTrainingComponent implements OnInit, OnDestroy {
   }
 
   startTimer() {
-    const progressPerInterval = +((1000 / this.duration) * 100).toFixed(0);
+    const progressPerInterval = +((1000 / (this.exercise.duration * 1000) * 100).toFixed(0);
     this.progressSubscription = interval(1000).pipe(
       scan((progress, interval) => {
         progress += progressPerInterval;
@@ -42,6 +44,7 @@ export class CurrentTrainingComponent implements OnInit, OnDestroy {
           this.snackBar.open('You have successfully escaped the wrath of the Glow Cloud, for now...', 'dismiss', {
             duration: 5000
           });
+          this.trainingService.completeExercise();
         }
       }
     );
@@ -62,7 +65,7 @@ export class CurrentTrainingComponent implements OnInit, OnDestroy {
         this.snackBar.open('You will be pummeled to death by dead animals raining from the heavens', 'dismiss', {
           duration: 3000
         });
-        this.stopTraining.emit();
+        this.trainingService.cancelExercise(this.progress / 100);
       } else {
         this.startTimer();
         this.snackBar.open('Your perfect hair and teeth like a military cemetery humble us', 'dismiss', {

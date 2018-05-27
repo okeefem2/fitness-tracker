@@ -1,18 +1,20 @@
 <section fxLayout fxLayoutAlign="center" class="training-container">
-    <mat-card fxFlex.xs="100" fxFlex="400px">
-        <mat-card-title fxLayoutAlign="center">
-          New Training Session
-        </mat-card-title>
-        <mat-card-content fxLayoutAlign="center">
-          <mat-form-field>
-              <mat-select placeholder="Select an exercise">
-                  <mat-option *ngFor="let exercise of exercises" [value]="exercise.id">{{ exercise.name }}</mat-option>                               
-              </mat-select>
-          </mat-form-field>
-        </mat-card-content>
-        <mat-card-actions fxLayoutAlign="center">
-          <button mat-raised-button color="accent" (click)="onStartTraining()">Start Training</button>
-        </mat-card-actions>
-      </mat-card>
+  <form [formGroup]="exerciseForm" (submit)="onStartTraining()">
+      <mat-card fxFlex.xs="100" fxFlex="400px">
+          <mat-card-title fxLayoutAlign="center">
+            New Training Session
+          </mat-card-title>
+          <mat-card-content fxLayoutAlign="center">
+            <mat-form-field>
+                <mat-select placeholder="Select an exercise" formControlName="exerciseId">
+                    <mat-option *ngFor="let exercise of exercises" [value]="exercise.id">{{ exercise.name }}</mat-option>                               
+                </mat-select>
+            </mat-form-field>
+          </mat-card-content>
+          <mat-card-actions fxLayoutAlign="center">
+            <button mat-raised-button color="accent" [disabled]="!exerciseForm.valid">Start Training</button>
+          </mat-card-actions>
+        </mat-card>
+  </form>
 </section>
 
