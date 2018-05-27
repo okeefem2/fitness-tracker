@@ -1,0 +1,38 @@
+#container {
+    display: flex;
+    width: 100%;
+    flex-direction: column;
+    /* this defaults to row which puts children side by side */
+    /* this also defines the main axis, column is top to bottom, row is left to right */
+    justify-content: center; 
+    /* This does nothing because it defines how they are aligned along the main axis */
+    height: 700px;
+    border: solid white;
+    /* Now making the container larger than the children we can see how the content is justified along the main axis */
+    align-items: center;
+    /* This defines how they are aligned on the cross axis start, end center etc.*/
+}
+
+.child {
+    height: 200px;
+    width: 200px
+}
+
+#child1 {
+    background-color: greenyellow;
+    /* flex: 1;  */
+    /* take all available space and distgribute equally */
+}
+
+#child2 {
+    background-color: aquamarine;
+    /* flex: 2; */
+    /* give this one double the space  */
+}
+
+#child3 {
+    background-color: palegreen;
+    /* flex: 1; */
+}
+
+/* flex values are essentially just used as a ratio */

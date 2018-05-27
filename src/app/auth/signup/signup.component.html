@@ -1,0 +1,36 @@
+<section class="form-container">
+  <h2>Sign Up</h2>
+  <form fxLayout="column" fxLayoutAlign="center center" fxLayoutGap="5px" [formGroup]="signupForm" (submit)="onSubmit()" *ngIf="signupForm">
+    <mat-form-field>
+      <input type="email" matInput placeholder="Email Address" formControlName="email" required/>
+      <mat-error *ngIf="getControlError('email', 'email')">
+        Please enter a valid email address
+      </mat-error>
+    </mat-form-field>
+    <mat-form-field>
+        <input type="password" matInput placeholder="Password" formControlName="password" required/>
+        <mat-hint align="end">
+          {{ signupForm.get('password').value | lengthHint:8 }}
+        </mat-hint>
+        <mat-error align="start" *ngIf="getControlError('password', 'minlength')">
+          Password must be at least 8 characters long
+        </mat-error>
+    </mat-form-field>
+    <mat-form-field>
+        <input matInput [matDatepicker]="birthdate" placeholder="Birthdate" [max]="maxDate" required formControlName="birthdate">
+        <mat-datepicker-toggle matSuffix [for]="birthdate"></mat-datepicker-toggle>
+        <mat-datepicker #birthdate></mat-datepicker>
+        <mat-error align="start" *ngIf="getControlError('birthdate', 'required')">
+            Please enter your birthdate.
+        </mat-error>
+    </mat-form-field>
+      <mat-slide-toggle formControlName="agreedToTerms" required>Agree to Terms and Conditions</mat-slide-toggle>
+    <button mat-raised-button color="accent" trype="submit">Submit</button>
+  </form>
+</section>
+<!-- example of using flexbox css -->
+<!-- <section id="container">
+  <div id="child1" class="child"></div>
+  <div id="child2" class="child"></div>
+  <div id="child3" class="child"></div>
+</section> -->
