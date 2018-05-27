@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, AbstractControl } from '@angular/forms';
 import { MatSnackBar } from '@angular/material';
+import { AuthService } from '../auth.service';
 
 @Component({
   selector: 'app-signup',
@@ -11,7 +12,7 @@ export class SignupComponent implements OnInit {
   
   public signupForm: FormGroup;
   public maxDate;
-  constructor(private fb: FormBuilder, private snackBar: MatSnackBar) { }
+  constructor(private fb: FormBuilder, private snackBar: MatSnackBar, private authService: AuthService) { }
 
   ngOnInit() {
     this.maxDate = new Date();
@@ -28,6 +29,7 @@ export class SignupComponent implements OnInit {
     let message = 'There is an issue with the data entered, please review and try again.';
     if (this.signupForm.valid) {
       message = 'Thanks for signing up!';
+      this.authService.registerUser(this.signupForm.value);
     }
     this.snackBar.open(message, 'dismiss', {
       duration: 5000
