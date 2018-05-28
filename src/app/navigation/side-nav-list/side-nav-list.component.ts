@@ -15,8 +15,8 @@ export class SideNavListComponent implements OnInit, OnDestroy {
   public isAuthenticated: boolean;
   private authSubscription: Subscription;
   ngOnInit() {
-    this.authSubscription = this.authService.authStateChanged.subscribe(user => {
-      this.isAuthenticated = user != null;
+    this.authSubscription = this.authService.authStateChanged.subscribe(isAuthenticated => {
+      this.isAuthenticated = isAuthenticated;
     })
   }
 

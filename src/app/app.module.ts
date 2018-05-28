@@ -16,6 +16,10 @@ import { LengthHintPipe } from './length-hint.pipe';
 import { HeaderComponent } from './navigation/header/header.component';
 import { SideNavListComponent } from './navigation/side-nav-list/side-nav-list.component';
 import { StopTrainingComponent } from './training/current-training/stop-training/stop-training.component';
+import { environment } from '../environments/environment';
+import { AngularFireModule } from 'angularfire2';
+import { AngularFirestoreModule } from 'angularfire2/firestore';
+import { AngularFireAuthModule } from 'angularfire2/auth';
 
 @NgModule({
   declarations: [
@@ -38,7 +42,10 @@ import { StopTrainingComponent } from './training/current-training/stop-training
     MaterialModule,
     AppRoutingModule,
     FormsModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    AngularFireModule.initializeApp(environment.firebaseConfig),
+    AngularFirestoreModule,
+    AngularFireAuthModule
   ],
   providers: [],
   bootstrap: [AppComponent],

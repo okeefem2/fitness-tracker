@@ -4,46 +4,54 @@ import { AuthData } from './auth-data.model';
 import { Subject } from 'rxjs';
 import { Router } from '@angular/router';
 import { MatSnackBar } from '@angular/material';
+import { AngularFireAuth } from 'angularfire2/auth';
+import { TrainingService } from '../training/training.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
-  private user: User;
-  public authStateChanged = new Subject<User>();
-  constructor(private router: Router, private snackBar: MatSnackBar) { }
+  public authStateChanged = new Subject<boolean>();
+  public isAuthenticated = false;
+  constructor(
+    private trainingService: TrainingService,
+    private afAuth: AngularFireAuth,
+    private router: Router, 
+    private snackBar: MatSnackBar) { 
+      this.initAuthStateListener();
+    }
 
   public registerUser(authData: AuthData) {
-    this.user = {
-      email: authData.email,
-      uid: Math.round(Math.random() * 10000).toString()
-    }
-    this.authStateChanged.next(this.user);
-    this.authSuccess();
+    this.afAuth.auth.createUserWithEmailAndPassword(authData.email, authData.password);
   }
 
   public login(authData: AuthData) {
-    this.registerUser(authData);
+    this.afAuth.auth.signInWithEmailAndPassword(authData.email, authData.password);
   }
 
   public logout() {
-    this.user = null;
-    this.authStateChanged.next(this.user);
-    this.router.navigate(['/login']);
-    this.snackBar.open('Until next time...', 'dismiss', {
-      duration: 5000
+    this.afAuth.auth.signOut(); 
+  }
+
+  public isAuth(): boolean {
+    return this.isAuthenticated;
+  }
+
+  public initAuthStateListener() {
+    this.afAuth.authState.subscribe(user => {
+      if (user) {
+        this.isAuthenticated = true;
+        this.authStateChanged.next(this.isAuthenticated);
+        this.router.navigate(['/training']);
+      } else {
+        this.trainingService.cancelSubscriptions();
+        this.isAuthenticated = false;
+        this.authStateChanged.next(this.isAuthenticated);
+        this.router.navigate(['/login']);
+        this.snackBar.open('Until next time...', 'dismiss', {
+          duration: 5000
+        });
+      }
     });
-  }
-
-  public getUser(): User {
-    return { ...this.user };
-  }
-
-  public isAuth() {
-    return this.user != null;
-  }
-
-  private authSuccess() {
-    this.router.navigate(['/training']);
   }
 }

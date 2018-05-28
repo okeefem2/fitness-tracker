@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { TrainingService } from '../training.service';
 import { Exercise } from '../exercise.model';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'new-training',
@@ -11,14 +12,15 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 export class NewTrainingComponent implements OnInit {
 
   constructor(private trainingService: TrainingService, private fb: FormBuilder) { }
-  public exercises: Exercise[];
+  public exercises: Observable<Exercise[]>;
   public exerciseForm: FormGroup;
 
   ngOnInit() {
     this.exerciseForm = this.fb.group({
       exerciseId: ['', [Validators.required]]
     });
-    this.exercises = this.trainingService.getAvailableExercises();
+    this.exercises = this.trainingService.availableExercisesChanged;
+    this.trainingService.fetchAvailableExercises();
   }
 
   public onStartTraining() {

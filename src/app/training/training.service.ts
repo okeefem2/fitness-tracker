@@ -1,26 +1,39 @@
 import { Injectable } from '@angular/core';
 import { Exercise } from './exercise.model';
-import { Subject } from 'rxjs';
+import { Subject, Observable, Subscription } from 'rxjs';
+import { AngularFirestore, AngularFirestoreCollection } from 'angularfire2/firestore';
+import { FireStoreUtils } from '../utils/firestore-utils';
+
 @Injectable({
   providedIn: 'root'
 })
 export class TrainingService {
   public exerciseChanged = new Subject<Exercise>();
-  private availableExercises: Exercise[] = [
-    { id: 'push-ups', name: 'Push Ups', duration: 60, calories: 10 },
-    { id: 'pull-ups', name: 'Pull Ups', duration: 30, calories: 10 },
-    { id: 'burpees', name: 'Burpees', duration: 120, calories: 20 },
-  ];
+  public availableExercisesChanged = new Subject<Exercise[]>();
+  public completedExercisesChanged = new Subject<Exercise[]>();
+  private firestoreSubscriptions = new Subscription();
+  private availableExercises: Exercise[] = [];
   private runningExercise: Exercise;
-  private exercises: Exercise[] = [];
-  constructor() { }
+  private completedExercisesRef: AngularFirestoreCollection<Exercise>;
+  private availableExercisesRef: AngularFirestoreCollection<Exercise>;
+  constructor(private firestore: AngularFirestore) { 
+    this.completedExercisesRef = this.firestore.collection<Exercise>('completedExercises');
+    this.availableExercisesRef = this.firestore.collection<Exercise>('availableExercises');
+  }
 
-  public getAvailableExercises(): Exercise[] {
-    return this.availableExercises.slice();
+  public fetchAvailableExercises(): void {
+    // return this.availableExercises.slice(); use slice so that the member array is immutable outside of the service
+    this.firestoreSubscriptions.add(FireStoreUtils.unwrapCollectionSnapshot(
+      this.availableExercisesRef.snapshotChanges()
+    ).subscribe(exercises => {
+      this.availableExercises = exercises;
+      this.availableExercisesChanged.next(this.availableExercises);
+    }));
   }
 
   public startExercise(id: string) {
     this.runningExercise = this.availableExercises.find(ex => ex.id === id);
+    this.availableExercisesRef.doc(id).update({ lastSelected: new Date() });
     this.exerciseChanged.next({ ...this.runningExercise });
   }
 
@@ -29,8 +42,7 @@ export class TrainingService {
   }
 
   public cancelExercise(fractionCompleted: number) {
-
-    this.exercises.push({ 
+    this.addCompletedExercise({ 
       ...this.runningExercise, 
       state: 'cancelled', 
       duration: this.runningExercise.duration * fractionCompleted, 
@@ -41,12 +53,26 @@ export class TrainingService {
   }
 
   public completeExercise() {
-    this.exercises.push({ ...this.runningExercise, state: 'completed', date: new Date() });
+    this.addCompletedExercise({ ...this.runningExercise, state: 'completed', date: new Date() });
     this.runningExercise = null;
     this.exerciseChanged.next(null);
   }
 
-  public getCompletedExercises() {
-    return this.exercises;
+  public fetchCompletedExercises(): void {
+    this.firestoreSubscriptions.add(
+      this.completedExercisesRef.valueChanges().subscribe(
+        completedExercises => {
+          this.completedExercisesChanged.next(completedExercises);
+        }
+      )
+    );
+  }
+
+  public addCompletedExercise(exercise: Exercise) {
+    this.completedExercisesRef.add(exercise);
+  }
+
+  public cancelSubscriptions() {
+    this.firestoreSubscriptions.unsubscribe();
   }
 }
