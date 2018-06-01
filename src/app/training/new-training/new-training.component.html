@@ -5,11 +5,12 @@
             New Training Session
           </mat-card-title>
           <mat-card-content fxLayoutAlign="center">
-            <mat-form-field>
+            <mat-form-field *ngIf="!isLoading">
                 <mat-select placeholder="Select an exercise" formControlName="exerciseId">
                     <mat-option *ngFor="let exercise of exercises | async" [value]="exercise.id">{{ exercise.name }}</mat-option>                               
                 </mat-select>
             </mat-form-field>
+            <mat-spinner *ngIf="isLoading"></mat-spinner>
           </mat-card-content>
           <mat-card-actions fxLayoutAlign="center">
             <button mat-raised-button color="accent" [disabled]="!exerciseForm.valid">Start Training</button>

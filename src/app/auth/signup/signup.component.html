@@ -25,7 +25,8 @@
         </mat-error>
     </mat-form-field>
       <mat-slide-toggle formControlName="agreedToTerms" required>Agree to Terms and Conditions</mat-slide-toggle>
-    <button mat-raised-button color="accent" trype="submit">Submit</button>
+      <button mat-raised-button color="accent" trype="submit" *ngIf="!isLoading">Submit</button>
+      <mat-spinner *ngIf="isLoading"></mat-spinner>
   </form>
 </section>
 <!-- example of using flexbox css -->

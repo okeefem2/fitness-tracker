@@ -3,6 +3,7 @@ import { Exercise } from './exercise.model';
 import { Subject, Observable, Subscription } from 'rxjs';
 import { AngularFirestore, AngularFirestoreCollection } from 'angularfire2/firestore';
 import { FireStoreUtils } from '../utils/firestore-utils';
+import { UIService } from '../shared/ui.service';
 
 @Injectable({
   providedIn: 'root'
@@ -16,16 +17,18 @@ export class TrainingService {
   private runningExercise: Exercise;
   private completedExercisesRef: AngularFirestoreCollection<Exercise>;
   private availableExercisesRef: AngularFirestoreCollection<Exercise>;
-  constructor(private firestore: AngularFirestore) { 
+  constructor(private firestore: AngularFirestore, private uiService: UIService) { 
     this.completedExercisesRef = this.firestore.collection<Exercise>('completedExercises');
     this.availableExercisesRef = this.firestore.collection<Exercise>('availableExercises');
   }
 
   public fetchAvailableExercises(): void {
+    this.uiService.loadingStateChanged.next(true);
     // return this.availableExercises.slice(); use slice so that the member array is immutable outside of the service
     this.firestoreSubscriptions.add(FireStoreUtils.unwrapCollectionSnapshot(
       this.availableExercisesRef.snapshotChanges()
     ).subscribe(exercises => {
+      this.uiService.loadingStateChanged.next(false);
       this.availableExercises = exercises;
       this.availableExercisesChanged.next(this.availableExercises);
     }));
