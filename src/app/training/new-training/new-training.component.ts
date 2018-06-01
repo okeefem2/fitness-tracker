@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { TrainingService } from '../training.service';
 import { Exercise } from '../exercise.model';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
@@ -10,7 +10,7 @@ import { UIService } from '../../shared/ui.service';
   templateUrl: './new-training.component.html',
   styleUrls: ['./new-training.component.css']
 })
-export class NewTrainingComponent implements OnInit {
+export class NewTrainingComponent implements OnInit, OnDestroy {
 
   public exercises: Observable<Exercise[]>;
   public exerciseForm: FormGroup;
@@ -31,5 +31,9 @@ export class NewTrainingComponent implements OnInit {
     if (this.exerciseForm.valid) {
       this.trainingService.startExercise(this.exerciseForm.value.exerciseId);
     }
+  }
+
+  public ngOnDestroy() {
+    this.loadingStateSubscription.unsubscribe();
   }
 }
