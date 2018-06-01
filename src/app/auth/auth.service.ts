@@ -3,7 +3,6 @@ import { User } from './user.model';
 import { AuthData } from './auth-data.model';
 import { Subject } from 'rxjs';
 import { Router } from '@angular/router';
-import { MatSnackBar } from '@angular/material';
 import { AngularFireAuth } from 'angularfire2/auth';
 import { TrainingService } from '../training/training.service';
 import { UIService } from '../shared/ui.service';
@@ -18,8 +17,7 @@ export class AuthService {
     private uiService: UIService,
     private trainingService: TrainingService,
     private afAuth: AngularFireAuth,
-    private router: Router, 
-    private snackBar: MatSnackBar) { 
+    private router: Router) { 
       this.initAuthStateListener();
     }
 
@@ -29,9 +27,7 @@ export class AuthService {
       this.uiService.loadingStateChanged.next(false);
     }).catch(e => {
       this.uiService.loadingStateChanged.next(false);
-      this.snackBar.open(`Dogs are not allowed in the dog park... ${e}`, 'dismiss', {
-        duration: 5000
-      });
+      this.uiService.showSnackBar(`Dogs are not allowed in the dog park... ${e}`, 'dismiss', 5000);
     });;
   }
 
@@ -41,9 +37,7 @@ export class AuthService {
       this.uiService.loadingStateChanged.next(false);
     }).catch(e => {
       this.uiService.loadingStateChanged.next(false);
-      this.snackBar.open(`Dogs are not allowed in the dog park... ${e}`, 'dismiss', {
-        duration: 5000
-      });
+      this.uiService.showSnackBar(`Dogs are not allowed in the dog park... ${e}`, 'dismiss', 5000);
     });
   }
 
@@ -61,17 +55,14 @@ export class AuthService {
         this.isAuthenticated = true;
         this.authStateChanged.next(this.isAuthenticated);
         this.router.navigate(['/training']);
-        this.snackBar.open('Welcome', 'dismiss', {
-          duration: 5000
-        });
+        this.uiService.showSnackBar('Welcome', 'dismiss', 5000);
+
       } else {
         this.trainingService.cancelSubscriptions();
         this.isAuthenticated = false;
         this.authStateChanged.next(this.isAuthenticated);
         this.router.navigate(['/login']);
-        this.snackBar.open('Until next time...', 'dismiss', {
-          duration: 5000
-        });
+        this.uiService.showSnackBar('Until next time...', 'dismiss', 5000);
       }
     });
   }

@@ -1,9 +1,11 @@
 import { Injectable } from '@angular/core';
 import { Exercise } from './exercise.model';
-import { Subject, Observable, Subscription } from 'rxjs';
+import { Subject, Observable, Subscription, throwError, of } from 'rxjs';
 import { AngularFirestore, AngularFirestoreCollection } from 'angularfire2/firestore';
 import { FireStoreUtils } from '../utils/firestore-utils';
 import { UIService } from '../shared/ui.service';
+import { ErrorObservable } from 'rxjs/observable/ErrorObservable';
+import { switchMap, throttle } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -27,10 +29,18 @@ export class TrainingService {
     // return this.availableExercises.slice(); use slice so that the member array is immutable outside of the service
     this.firestoreSubscriptions.add(FireStoreUtils.unwrapCollectionSnapshot(
       this.availableExercisesRef.snapshotChanges()
-    ).subscribe(exercises => {
+    )
+    // .pipe(
+    //   switchMap(e => ErrorObservable.create('error')) // have to use switchmap, regular map only modifies and sends the og through modified
+    // )
+    .subscribe((exercises: any) => {
       this.uiService.loadingStateChanged.next(false);
       this.availableExercises = exercises;
       this.availableExercisesChanged.next(this.availableExercises);
+    }, error => {
+      this.uiService.loadingStateChanged.next(false);
+      this.uiService.showSnackBar(`The Sheriff's secret police are on to you... ${error}`, 'dismiss', 5000);
+      this.availableExercisesChanged.next(null);
     }));
   }
 

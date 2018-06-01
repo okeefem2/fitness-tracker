@@ -1,21 +1,26 @@
 <section fxLayout fxLayoutAlign="center" class="training-container">
   <form [formGroup]="exerciseForm" (submit)="onStartTraining()">
-      <mat-card fxFlex.xs="100" fxFlex="400px">
+      <mat-card fxFlex.xs="100" fxFlex="400px" *ngIf="(exercises$ | async) as exercises; else reload">
           <mat-card-title fxLayoutAlign="center">
             New Training Session
           </mat-card-title>
           <mat-card-content fxLayoutAlign="center">
-            <mat-form-field *ngIf="!isLoading">
+            <mat-form-field>
                 <mat-select placeholder="Select an exercise" formControlName="exerciseId">
-                    <mat-option *ngFor="let exercise of exercises | async" [value]="exercise.id">{{ exercise.name }}</mat-option>                               
+                    <mat-option *ngFor="let exercise of exercises" [value]="exercise.id">{{ exercise.name }}</mat-option>                               
                 </mat-select>
             </mat-form-field>
-            <mat-spinner *ngIf="isLoading"></mat-spinner>
           </mat-card-content>
           <mat-card-actions fxLayoutAlign="center">
             <button mat-raised-button color="accent" [disabled]="!exerciseForm.valid">Start Training</button>
           </mat-card-actions>
         </mat-card>
+        <ng-template #reload>
+            <button mat-raised-button color="accent" (click)="fetchExercises()" *ngIf="!isLoading; else loading">Reload Exercises</button>
+            <ng-template #loading>
+                <mat-spinner></mat-spinner>
+            </ng-template>
+          </ng-template> 
   </form>
 </section>
 

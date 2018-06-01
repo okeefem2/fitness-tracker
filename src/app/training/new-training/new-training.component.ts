@@ -12,7 +12,7 @@ import { UIService } from '../../shared/ui.service';
 })
 export class NewTrainingComponent implements OnInit, OnDestroy {
 
-  public exercises: Observable<Exercise[]>;
+  public exercises$ = new Observable<Exercise[]>();
   public exerciseForm: FormGroup;
   public isLoading = false;
   private loadingStateSubscription: Subscription;
@@ -23,8 +23,8 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
     this.exerciseForm = this.fb.group({
       exerciseId: ['', [Validators.required]]
     });
-    this.exercises = this.trainingService.availableExercisesChanged;
-    this.trainingService.fetchAvailableExercises();
+    this.exercises$ = this.trainingService.availableExercisesChanged;
+    this.fetchExercises();
   }
 
   public onStartTraining() {
@@ -35,5 +35,9 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
 
   public ngOnDestroy() {
     this.loadingStateSubscription.unsubscribe();
+  }
+
+  public fetchExercises() {
+    this.trainingService.fetchAvailableExercises();
   }
 }
