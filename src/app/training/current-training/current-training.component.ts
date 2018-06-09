@@ -28,7 +28,7 @@ export class CurrentTrainingComponent implements OnInit, OnDestroy {
   }
 
   startTimer() {
-    const progressPerInterval = +((1000 / (this.exercise.duration * 1000) * 100).toFixed(0);
+    const progressPerInterval = +((1000 / (this.exercise.duration * 1000) * 100).toFixed(0));
     this.progressSubscription = interval(1000).pipe(
       scan((progress, interval) => {
         progress += progressPerInterval;
