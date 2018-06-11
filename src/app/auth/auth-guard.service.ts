@@ -3,13 +3,20 @@ import { CanActivate, CanLoad, Route, ActivatedRouteSnapshot, RouterStateSnapsho
 import { AuthService } from './auth.service';
 import { Observable } from 'rxjs';
 import { MatSnackBar } from '@angular/material';
+import { State } from '../app.reducer';
+import { Store } from '@ngrx/store';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthGuardService implements CanActivate, CanLoad {
 
-  public constructor(private authService: AuthService, private snackBar: MatSnackBar, private router: Router) { }
+  public constructor(
+    private authService: AuthService, 
+    private snackBar: MatSnackBar, 
+    private router: Router,
+    private store: Store<State>
+  ) { }
 
   public canLoad(route: Route): boolean | Observable<boolean> | Promise<boolean> {
     if (this.authService.isAuth()) {

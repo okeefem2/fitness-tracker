@@ -9,6 +9,8 @@ import { UIService } from '../shared/ui.service';
 import { Store } from '@ngrx/store';
 import { State } from '../app.reducer';
 import { StartLoading, StopLoading } from '../shared/ui.actions';
+import { Login, Logout } from './auth.actions';
+
 @Injectable({
   providedIn: 'root'
 })
@@ -29,11 +31,11 @@ export class AuthService {
     // this.uiService.loadingStateChanged.next(true);
     this.store.dispatch(new StartLoading());
     this.afAuth.auth.createUserWithEmailAndPassword(authData.email, authData.password).then(user => {
-      this.uiService.loadingStateChanged.next(false);
+      // this.uiService.loadingStateChanged.next(false);
       this.store.dispatch(new StopLoading());
 
     }).catch(e => {
-      this.uiService.loadingStateChanged.next(false);
+      // this.uiService.loadingStateChanged.next(false);
       this.store.dispatch(new StopLoading());
       this.uiService.showSnackBar(`Dogs are not allowed in the dog park... ${e}`, 'dismiss', 5000);
     });;
@@ -64,15 +66,17 @@ export class AuthService {
   public initAuthStateListener() {
     this.afAuth.authState.subscribe(user => {
       if (user) {
-        this.isAuthenticated = true;
-        this.authStateChanged.next(this.isAuthenticated);
+        this.store.dispatch(new Login());
+        // this.isAuthenticated = true;
+        // this.authStateChanged.next(this.isAuthenticated);
         this.router.navigate(['/training']);
         this.uiService.showSnackBar('Welcome', 'dismiss', 5000);
 
       } else {
         this.trainingService.cancelSubscriptions();
-        this.isAuthenticated = false;
-        this.authStateChanged.next(this.isAuthenticated);
+        this.store.dispatch(new Logout());
+        // this.isAuthenticated = false;
+        // this.authStateChanged.next(this.isAuthenticated);
         this.router.navigate(['/login']);
         this.uiService.showSnackBar('Until next time...', 'dismiss', 5000);
       }
