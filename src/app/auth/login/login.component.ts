@@ -2,7 +2,9 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormGroup, FormBuilder, Validators, AbstractControl } from '@angular/forms';
 import { AuthService } from '../auth.service';
 import { UIService } from '../../shared/ui.service';
-import { Subscription } from 'rxjs';
+import { Subscription, Observable } from 'rxjs';
+import { State, getIsLoading } from '../../app.reducer';
+import { Store } from '@ngrx/store';
 
 @Component({
   selector: 'app-login',
@@ -13,13 +15,18 @@ export class LoginComponent implements OnInit, OnDestroy {
 
   public loginForm: FormGroup;
   public maxDate;
-  public isLoading = false;
+  public isLoading$: Observable<boolean>;
   private loadingStateSubscription: Subscription;
 
-  constructor(private fb: FormBuilder, private authService: AuthService, private uiService: UIService) { }
+  constructor(
+    private fb: FormBuilder, 
+    private authService: AuthService, 
+    private uiService: UIService,
+    private store: Store<{ ui: State}>) { }
 
   ngOnInit() {
-    this.loadingStateSubscription = this.uiService.loadingStateChanged.subscribe(state => this.isLoading = state);
+    this.isLoading$ = this.store.select(getIsLoading);
+    // this.loadingStateSubscription = this.uiService.loadingStateChanged.subscribe(state => this.isLoading = state);
     this.maxDate = new Date();
     this.maxDate.setFullYear(this.maxDate.getFullYear() - 18);
     this.loginForm = this.fb.group({
@@ -43,7 +50,7 @@ export class LoginComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    this.loadingStateSubscription.unsubscribe();
+    this.loadingStateSubscription && this.loadingStateSubscription.unsubscribe();
   }
 
 }

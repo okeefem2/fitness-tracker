@@ -15,6 +15,8 @@ import { AuthModule } from './auth/auth.module';
 import { TrainingModule } from './training/training.module';
 import { AngularFirestoreModule } from 'angularfire2/firestore';
 import { AngularFireAuthModule } from 'angularfire2/auth';
+import { StoreModule } from '@ngrx/store';
+import { reducers } from './app.reducer';
 
 @NgModule({
   declarations: [
@@ -25,6 +27,7 @@ import { AngularFireAuthModule } from 'angularfire2/auth';
     StopTrainingComponent
   ],
   imports: [
+    StoreModule.forRoot(reducers),
     AuthModule,
     BrowserModule,
     BrowserAnimationsModule,

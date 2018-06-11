@@ -1,6 +1,9 @@
 import { Component, Inject } from '@angular/core';
 import { MAT_DIALOG_DATA } from '@angular/material';
 
+/**
+ * Mat dialog component!
+ */
 @Component({
   selector: 'app-stop-training',
   template: `<h1 mat-dialog-title>Do you throw yourself at the mercy of the Glow Cloud?</h1>
@@ -13,5 +16,9 @@ import { MAT_DIALOG_DATA } from '@angular/material';
             </mat-dialog-actions>`
 })
 export class StopTrainingComponent {
+  /**
+   * 
+   * @param data Injects data for the dialog
+   */
   constructor(@Inject(MAT_DIALOG_DATA) private data: any) { }
 }

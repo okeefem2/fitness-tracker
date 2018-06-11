@@ -6,7 +6,9 @@ import { FireStoreUtils } from '../utils/firestore-utils';
 import { UIService } from '../shared/ui.service';
 import { ErrorObservable } from 'rxjs/observable/ErrorObservable';
 import { switchMap, throttle } from 'rxjs/operators';
-
+import { Store } from '@ngrx/store';
+import { State } from '../app.reducer';
+import { StartLoading, StopLoading } from '../shared/ui.actions';
 @Injectable({
   providedIn: 'root'
 })
@@ -19,13 +21,18 @@ export class TrainingService {
   private runningExercise: Exercise;
   private completedExercisesRef: AngularFirestoreCollection<Exercise>;
   private availableExercisesRef: AngularFirestoreCollection<Exercise>;
-  constructor(private firestore: AngularFirestore, private uiService: UIService) { 
+  constructor(
+    private firestore: AngularFirestore, 
+    private uiService: UIService,
+    private store: Store<{ ui: State }>
+  ) { 
     this.completedExercisesRef = this.firestore.collection<Exercise>('completedExercises');
     this.availableExercisesRef = this.firestore.collection<Exercise>('availableExercises');
   }
 
   public fetchAvailableExercises(): void {
-    this.uiService.loadingStateChanged.next(true);
+    this.store.dispatch(new StartLoading());
+    // this.uiService.loadingStateChanged.next(true);
     // return this.availableExercises.slice(); use slice so that the member array is immutable outside of the service
     this.firestoreSubscriptions.add(FireStoreUtils.unwrapCollectionSnapshot(
       this.availableExercisesRef.snapshotChanges()
@@ -34,11 +41,13 @@ export class TrainingService {
     //   switchMap(e => ErrorObservable.create('error')) // have to use switchmap, regular map only modifies and sends the og through modified
     // )
     .subscribe((exercises: any) => {
-      this.uiService.loadingStateChanged.next(false);
+      this.store.dispatch(new StopLoading());
+      // this.uiService.loadingStateChanged.next(false);
       this.availableExercises = exercises;
       this.availableExercisesChanged.next(this.availableExercises);
     }, error => {
-      this.uiService.loadingStateChanged.next(false);
+      // this.uiService.loadingStateChanged.next(false);
+      this.store.dispatch(new StopLoading());
       this.uiService.showSnackBar(`The Sheriff's secret police are on to you... ${error}`, 'dismiss', 5000);
       this.availableExercisesChanged.next(null);
     }));

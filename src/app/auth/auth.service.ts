@@ -6,7 +6,9 @@ import { Router } from '@angular/router';
 import { AngularFireAuth } from 'angularfire2/auth';
 import { TrainingService } from '../training/training.service';
 import { UIService } from '../shared/ui.service';
-
+import { Store } from '@ngrx/store';
+import { State } from '../app.reducer';
+import { StartLoading, StopLoading } from '../shared/ui.actions';
 @Injectable({
   providedIn: 'root'
 })
@@ -17,26 +19,36 @@ export class AuthService {
     private uiService: UIService,
     private trainingService: TrainingService,
     private afAuth: AngularFireAuth,
-    private router: Router) { 
+    private router: Router,
+    private store: Store<{ ui: State }>
+  ) { 
       this.initAuthStateListener();
     }
 
   public registerUser(authData: AuthData) {
-    this.uiService.loadingStateChanged.next(true);
+    // this.uiService.loadingStateChanged.next(true);
+    this.store.dispatch(new StartLoading());
     this.afAuth.auth.createUserWithEmailAndPassword(authData.email, authData.password).then(user => {
       this.uiService.loadingStateChanged.next(false);
+      this.store.dispatch(new StopLoading());
+
     }).catch(e => {
       this.uiService.loadingStateChanged.next(false);
+      this.store.dispatch(new StopLoading());
       this.uiService.showSnackBar(`Dogs are not allowed in the dog park... ${e}`, 'dismiss', 5000);
     });;
   }
 
   public login(authData: AuthData) {
-    this.uiService.loadingStateChanged.next(true);
+    // this.uiService.loadingStateChanged.next(true);
+    this.store.dispatch(new StartLoading());
+
     this.afAuth.auth.signInWithEmailAndPassword(authData.email, authData.password).then(user => {
-      this.uiService.loadingStateChanged.next(false);
+      // this.uiService.loadingStateChanged.next(false);
+      this.store.dispatch(new StopLoading());
     }).catch(e => {
-      this.uiService.loadingStateChanged.next(false);
+      // this.uiService.loadingStateChanged.next(false);
+      this.store.dispatch(new StopLoading());
       this.uiService.showSnackBar(`Dogs are not allowed in the dog park... ${e}`, 'dismiss', 5000);
     });
   }
