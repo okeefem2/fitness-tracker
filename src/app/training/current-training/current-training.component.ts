@@ -5,6 +5,8 @@ import { MatSnackBar, MatDialog } from '@angular/material';
 import { StopTrainingComponent } from './stop-training/stop-training.component';
 import { TrainingService } from '../training.service';
 import { Exercise } from '../exercise.model';
+import { Store } from '@ngrx/store';
+import { TrainingState, getActiveExercise } from '../training.reducer';
 
 @Component({
   selector: 'current-training',
@@ -16,11 +18,17 @@ export class CurrentTrainingComponent implements OnInit, OnDestroy {
   public exercise: Exercise;
   private progressSubscription: Subscription;
 
-  constructor(private snackBar: MatSnackBar, private dialog: MatDialog, private trainingService: TrainingService) { }
+  constructor(private snackBar: MatSnackBar,
+              private dialog: MatDialog,
+              private trainingService: TrainingService,
+              private store: Store<TrainingState>) { }
 
   ngOnInit() {
-    this.exercise = this.trainingService.getRunningExercise();
-    this.exercise && this.startTimer();
+    this.store.select(getActiveExercise).subscribe(exercise => {
+      debugger;
+      this.exercise = exercise;
+      this.exercise && this.startTimer();
+    });
   }
 
   ngOnDestroy() {

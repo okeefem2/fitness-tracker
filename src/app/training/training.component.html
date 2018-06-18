@@ -1,4 +1,4 @@
-<mat-tab-group *ngIf="!training">
+<mat-tab-group *ngIf="!(training$ | async)">
   <mat-tab label="New Training Session">
     <new-training></new-training>
   </mat-tab>
@@ -8,4 +8,5 @@
 </mat-tab-group>
 <!-- shift alit down to duplicate line ( and shilft alt up) -->
 <!-- cmd f2 to edit all instances in a file -->
-<current-training *ngIf="training" (stopTraining)="onStopTraining()"></current-training>
+<!-- (stopTraining)="onStopTraining()" -->
+<current-training *ngIf="training$ | async"></current-training>

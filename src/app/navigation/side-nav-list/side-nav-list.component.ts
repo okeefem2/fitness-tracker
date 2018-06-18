@@ -1,6 +1,8 @@
 import { Component, OnInit, EventEmitter, Output, OnDestroy } from '@angular/core';
-import { Subscription } from 'rxjs';
+import { Subscription, Observable } from 'rxjs';
 import { AuthService } from '../../auth/auth.service';
+import { State, getIsAuthenticated } from '../../app.reducer';
+import { Store } from '@ngrx/store';
 
 @Component({
   selector: 'side-nav-list',
@@ -8,16 +10,17 @@ import { AuthService } from '../../auth/auth.service';
   styleUrls: ['./side-nav-list.component.css']
 })
 export class SideNavListComponent implements OnInit, OnDestroy {
-  
-  @Output() public closeSideNav = new EventEmitter<void>();
-  constructor(private authService: AuthService) { }
 
-  public isAuthenticated: boolean;
+  @Output() public closeSideNav = new EventEmitter<void>();
+  constructor(private authService: AuthService, private store: Store<State>) { }
+
+  public isAuthenticated$: Observable<boolean>;
   private authSubscription: Subscription;
   ngOnInit() {
-    this.authSubscription = this.authService.authStateChanged.subscribe(isAuthenticated => {
-      this.isAuthenticated = isAuthenticated;
-    })
+    this.isAuthenticated$ = this.store.select(getIsAuthenticated);
+    // this.authSubscription = this.authService.authStateChanged.subscribe(isAuthenticated => {
+    //   this.isAuthenticated = isAuthenticated;
+    // });
   }
 
   ngOnDestroy() {

@@ -1,5 +1,7 @@
 import { Component, OnInit, Output, EventEmitter, OnDestroy } from '@angular/core';
-import { Subscription } from 'rxjs';
+import { Subscription, Observable } from 'rxjs';
+import { State, getIsAuthenticated } from '../../app.reducer';
+import { Store } from '@ngrx/store';
 import { AuthService } from '../../auth/auth.service';
 
 @Component({
@@ -10,14 +12,15 @@ import { AuthService } from '../../auth/auth.service';
 export class HeaderComponent implements OnInit, OnDestroy {
 
   @Output() public toggleSideNav = new EventEmitter<void>();
-  constructor(private authService: AuthService) { }
+  constructor(private store: Store<State>, private authService: AuthService) { }
 
-  public isAuthenticated: boolean;
+  public isAuthenticated$: Observable<boolean>;
   private authSubscription: Subscription;
   ngOnInit() {
-    this.authSubscription = this.authService.authStateChanged.subscribe(isAuthenticated => {
-      this.isAuthenticated = isAuthenticated;
-    })
+    this.isAuthenticated$ = this.store.select(getIsAuthenticated);
+    // this.authSubscription = this.authService.authStateChanged.subscribe(isAuthenticated => {
+    //   this.isAuthenticated = isAuthenticated;
+    // });
   }
 
   ngOnDestroy() {

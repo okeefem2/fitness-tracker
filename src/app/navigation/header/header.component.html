@@ -10,9 +10,9 @@
         <a routerLink="/">Fitness Tracker</a>
     </div>
     <div fxFlex fxLayout fxLayoutAlign="flex-end" fxLayoutGap="10px" fxHide.xs>
-        <a routerLink="/signup" *ngIf="!isAuthenticated">Sign up</a>
-        <a routerLink="/login" *ngIf="!isAuthenticated">Login</a>
-        <a routerLink="/training" *ngIf="isAuthenticated">Training</a>
-        <a (click)="logout()" *ngIf="isAuthenticated">Logout</a>
+        <a routerLink="/signup" *ngIf="!(isAuthenticated$ | async)">Sign up</a>
+        <a routerLink="/login" *ngIf="!(isAuthenticated$ | async)">Login</a>
+        <a routerLink="/training" *ngIf="isAuthenticated$ | async">Training</a>
+        <a (click)="logout()" *ngIf="isAuthenticated$ | async">Logout</a>
     </div>
 </mat-toolbar>

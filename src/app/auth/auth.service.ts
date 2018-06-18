@@ -15,7 +15,7 @@ import { Login, Logout } from './auth.actions';
   providedIn: 'root'
 })
 export class AuthService {
-  public authStateChanged = new Subject<boolean>();
+  // public authStateChanged = new Subject<boolean>();
   public isAuthenticated = false;
   constructor(
     private uiService: UIService,
@@ -23,7 +23,7 @@ export class AuthService {
     private afAuth: AngularFireAuth,
     private router: Router,
     private store: Store<{ ui: State }>
-  ) { 
+  ) {
       this.initAuthStateListener();
     }
 
@@ -38,7 +38,7 @@ export class AuthService {
       // this.uiService.loadingStateChanged.next(false);
       this.store.dispatch(new StopLoading());
       this.uiService.showSnackBar(`Dogs are not allowed in the dog park... ${e}`, 'dismiss', 5000);
-    });;
+    });
   }
 
   public login(authData: AuthData) {
@@ -56,7 +56,7 @@ export class AuthService {
   }
 
   public logout() {
-    this.afAuth.auth.signOut(); 
+    this.afAuth.auth.signOut();
   }
 
   public isAuth(): boolean {

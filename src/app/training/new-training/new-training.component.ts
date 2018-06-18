@@ -5,7 +5,8 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Observable, Subscription } from 'rxjs';
 import { UIService } from '../../shared/ui.service';
 import { Store } from '@ngrx/store';
-import { State, getIsLoading } from '../../app.reducer';
+import { getIsLoading } from '../../app.reducer';
+import { TrainingState, getActiveExercise, getAvailableExercises } from '../training.reducer';
 
 @Component({
   selector: 'new-training',
@@ -19,10 +20,10 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
   public isLoading$: Observable<boolean>;
   private loadingStateSubscription: Subscription;
   constructor(
-    private trainingService: TrainingService, 
-    private fb: FormBuilder, 
+    private trainingService: TrainingService,
+    private fb: FormBuilder,
     private uiService: UIService,
-    private store: Store<{ ui: State}>
+    private store: Store<TrainingState>
   ) { }
 
   ngOnInit() {
@@ -31,7 +32,8 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
     this.exerciseForm = this.fb.group({
       exerciseId: ['', [Validators.required]]
     });
-    this.exercises$ = this.trainingService.availableExercisesChanged;
+    // this.exercises$ = this.trainingService.availableExercisesChanged;
+    this.exercises$ = this.store.select(getAvailableExercises);
     this.fetchExercises();
   }
 
@@ -42,7 +44,7 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
   }
 
   public ngOnDestroy() {
-    this.loadingStateSubscription && this.loadingStateSubscription.unsubscribe();
+    // this.loadingStateSubscription && this.loadingStateSubscription.unsubscribe();
   }
 
   public fetchExercises() {

@@ -24,4 +24,6 @@ export function authReducer(state = initialState, action: AuthActions) {
     }
 }
 
-export const getAuthIsAuthenticated = (state: AuthState) => state.isAuthenticated;
+export const getAuthIsAuthenticated = (state: AuthState) => {
+  return state.isAuthenticated;
+};

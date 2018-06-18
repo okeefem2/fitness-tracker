@@ -19,8 +19,8 @@ export class LoginComponent implements OnInit, OnDestroy {
   private loadingStateSubscription: Subscription;
 
   constructor(
-    private fb: FormBuilder, 
-    private authService: AuthService, 
+    private fb: FormBuilder,
+    private authService: AuthService,
     private uiService: UIService,
     private store: Store<{ ui: State}>) { }
 

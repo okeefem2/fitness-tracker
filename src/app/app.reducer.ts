@@ -3,14 +3,14 @@ import { ActionReducerMap, createFeatureSelector, createSelector } from '@ngrx/s
 import { AuthState, authReducer, getAuthIsAuthenticated } from './auth/auth.reducer';
 
 export interface State {
-    ui: UIState,
-    auth: AuthState
+    ui: UIState;
+    auth: AuthState;
 }
 
 export const reducers: ActionReducerMap<State> = {
     ui: uiReducer,
     auth: authReducer
-}
+};
 
 // Get quick access to ui state
 export const getUIState = createFeatureSelector<UIState>('ui');
